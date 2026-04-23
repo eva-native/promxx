@@ -126,30 +126,6 @@ auto bounds = promxx::metrics::DefaultBuckets();
 
 `+Inf` is always appended automatically if not present, so `GetBuckets()` always has one more entry than the bounds you pass in.
 
-## Exposition
-
-promxx stores metric state but does not serialize it. This is intentional: exposition format and transport are application concerns. To emit metrics, read the values and format them yourself:
-
-```cpp
-// Example: serialize one histogram to Prometheus text format
-void write_histogram(std::ostream& out,
-                     const std::string& name,
-                     promxx::metrics::Histogram<>& h) {
-    auto bounds  = h.GetBounds();
-    auto buckets = h.GetBuckets();
-
-    for (size_t i = 0; i < bounds.size(); ++i) {
-        std::string le = std::isinf(bounds[i]) ? "+Inf"
-                                               : std::to_string(bounds[i]);
-        out << name << "_bucket{le=\"" << le << "\"} " << buckets[i] << "\n";
-    }
-    out << name << "_sum "   << h.GetSum()   << "\n";
-    out << name << "_count " << h.GetCount() << "\n";
-}
-```
-
-The same state can be serialized to OpenMetrics, pushed to StatsD, emitted as structured logs, or exported through any other mechanism without modifying the metric objects.
-
 ## Thread Safety
 
 All metric types are safe to read and write concurrently from any number of threads. Internally they use `std::atomic` with `memory_order_relaxed`, which is sufficient for observability workloads where strict ordering between metric updates is not required.
