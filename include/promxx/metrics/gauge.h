@@ -3,7 +3,7 @@
 #include <atomic>
 
 namespace promxx::metrics {
-template <typename T>
+template <typename T = double>
 class Gauge {
 public:
   T Inc() { return Inc(T{1}); }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <atomic>
+#include <cstdint>
 
 namespace promxx::metrics {
-template <typename T>
+template <typename T = std::uint64_t>
 class Counter {
 public:
   T Inc() { return Inc(T{1}); }
