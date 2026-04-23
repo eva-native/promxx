@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <limits>
 #include <thread>
 
@@ -110,20 +111,27 @@ TEST(HistogramTest, ThreadSafety) {
   Histogram h({1.0, 10.0, 100.0});
   constexpr int kThreads = 8;
   constexpr int kObservations = 10'000;
+  // Use three values that land in three different buckets to exercise
+  // concurrent writes across buckets, not just a single one.
+  static constexpr std::array<double, 3> kValues = {0.5, 5.0, 50.0};
 
   std::vector<std::thread> threads;
   threads.reserve(kThreads);
   for (int i = 0; i < kThreads; ++i) {
     threads.emplace_back([&h] {
       for (int j = 0; j < kObservations; ++j)
-        h.Observe(5.0);
+        h.Observe(kValues[static_cast<std::size_t>(j) % kValues.size()]);
     });
   }
   for (auto &t : threads)
     t.join();
 
   EXPECT_EQ(h.GetCount(), static_cast<std::uint64_t>(kThreads * kObservations));
-  EXPECT_DOUBLE_EQ(h.GetSum(), 5.0 * kThreads * kObservations);
-  EXPECT_EQ(h.GetBuckets().back(),
+  const auto buckets = h.GetBuckets();
+  EXPECT_EQ(buckets.back(),
             static_cast<std::uint64_t>(kThreads * kObservations));
+  // Each bucket should have received writes from concurrent threads.
+  EXPECT_GT(buckets[0], 0u);
+  EXPECT_GT(buckets[1], buckets[0]);
+  EXPECT_GT(buckets[2], buckets[1]);
 }

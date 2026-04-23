@@ -1,8 +1,9 @@
-BUILD_DIR   ?= build
-BUILD_TYPE  ?= RelWithDebInfo
-CMAKE       ?= cmake
-CTEST       ?= ctest
-JOBS        ?= $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
+BUILD_DIR        ?= build
+BUILD_TYPE       ?= RelWithDebInfo
+CMAKE            ?= cmake
+CTEST            ?= ctest
+JOBS             ?= $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
+SANITIZERS       ?= address;undefined
 
 SOURCES := $(shell find include src tests -name '*.h' -o -name '*.cpp' 2>/dev/null)
 
@@ -11,7 +12,8 @@ SOURCES := $(shell find include src tests -name '*.h' -o -name '*.cpp' 2>/dev/nu
 all: build
 
 configure: ## Configure the CMake project
-	$(CMAKE) -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+	$(CMAKE) -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
+		$(if $(SANITIZERS),-DPROMXX_SANITIZERS="$(SANITIZERS)")
 
 build: configure ## Build the project
 	$(CMAKE) --build $(BUILD_DIR) --parallel $(JOBS)

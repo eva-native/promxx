@@ -43,6 +43,7 @@ target_sources(promxx
             include/promxx/metrics/gauge.h
             include/promxx/metrics/counter.h
             include/promxx/metrics/histogram.h
+            include/promxx/meta/concepts.h
 )
 
 if(${PROMXX_INSTALL})

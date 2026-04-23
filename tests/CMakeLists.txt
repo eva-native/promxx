@@ -8,6 +8,8 @@ CPMAddPackage(
 )
 
 add_executable(promxx_tests
+    test_counter.cpp
+    test_gauge.cpp
     test_histogram.cpp
 )
 

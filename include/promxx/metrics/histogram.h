@@ -9,9 +9,11 @@
 #include <stdexcept>
 #include <vector>
 
-namespace promxx::metrics {
+#include "promxx/meta/concepts.h"
 
+namespace promxx::metrics {
 template <typename T = double>
+  requires(MetricValue<T>)
 class Histogram {
 public:
   explicit Histogram(std::vector<double> bounds) : bounds_(std::move(bounds)) {
@@ -26,6 +28,8 @@ public:
   }
 
   void Observe(T value) {
+    if (std::isnan(static_cast<double>(value)))
+      return;
     auto it = std::lower_bound(bounds_.begin(), bounds_.end(),
                                static_cast<double>(value));
     bucket_counts_[static_cast<std::size_t>(it - bounds_.begin())].fetch_add(
@@ -62,12 +66,12 @@ private:
   std::atomic<T> sum_{T{}};
 };
 
-constexpr inline std::vector<double> DefaultBuckets() {
+inline std::vector<double> DefaultBuckets() {
   return {.005, .01, .025, .05, .1, .25, .5, 1.0, 2.5, 5.0, 10.0};
 }
 
-constexpr inline std::vector<double> LinearBuckets(double start, double width,
-                                                   int count) {
+inline std::vector<double> LinearBuckets(double start, double width,
+                                         int count) {
   if (count <= 0)
     throw std::invalid_argument("count must be positive");
   std::vector<double> bounds;
@@ -78,8 +82,8 @@ constexpr inline std::vector<double> LinearBuckets(double start, double width,
   return bounds;
 }
 
-constexpr inline std::vector<double>
-ExponentialBuckets(double start, double factor, int count) {
+inline std::vector<double> ExponentialBuckets(double start, double factor,
+                                              int count) {
   if (count <= 0)
     throw std::invalid_argument("count must be positive");
   if (start <= 0)
@@ -88,8 +92,10 @@ ExponentialBuckets(double start, double factor, int count) {
     throw std::invalid_argument("factor must be greater than 1");
   std::vector<double> bounds;
   bounds.reserve(static_cast<std::size_t>(count));
+  double bound = start;
   for (int i = 0; i < count; ++i) {
-    bounds.push_back(start * std::pow(factor, i));
+    bounds.push_back(bound);
+    bound *= factor;
   }
   return bounds;
 }
