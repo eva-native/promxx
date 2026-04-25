@@ -7,26 +7,27 @@
 #include <promxx/metrics/counter.h>
 
 using promxx::metrics::Counter;
+using promxx::metrics::CounterBase;
 
 TEST(CounterTest, StartsAtZero) {
-  Counter<> c;
+  Counter c;
   EXPECT_EQ(c.Get(), 0u);
 }
 
 TEST(CounterTest, Inc) {
-  Counter<> c;
+  Counter c;
   c.Inc();
   EXPECT_EQ(c.Get(), 1u);
 }
 
 TEST(CounterTest, IncByAmount) {
-  Counter<> c;
+  Counter c;
   c.Inc(5u);
   EXPECT_EQ(c.Get(), 5u);
 }
 
 TEST(CounterTest, MultipleIncs) {
-  Counter<> c;
+  Counter c;
   c.Inc();
   c.Inc(3u);
   c.Inc();
@@ -34,14 +35,14 @@ TEST(CounterTest, MultipleIncs) {
 }
 
 TEST(CounterTest, FloatCounter) {
-  Counter<double> c;
+  CounterBase<double> c;
   c.Inc(1.5);
   c.Inc(2.5);
   EXPECT_DOUBLE_EQ(c.Get(), 4.0);
 }
 
 TEST(CounterTest, ThreadSafety) {
-  Counter<> c;
+  Counter c;
   constexpr int kThreads = 8;
   constexpr int kIncrements = 10'000;
 

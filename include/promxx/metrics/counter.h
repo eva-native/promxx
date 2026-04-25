@@ -3,12 +3,13 @@
 #include <atomic>
 #include <cstdint>
 
+#include "promxx/detail/noncopybale.h"
 #include "promxx/meta/concepts.h"
 
 namespace promxx::metrics {
-template <typename T = std::uint64_t>
+template <typename T>
   requires(MetricValue<T>)
-class Counter {
+class CounterBase : ::promxx::detail::Noncopybale {
 public:
   void Inc() { Inc(T{1}); }
   void Inc(T v) { value_.fetch_add(v, std::memory_order_relaxed); }
@@ -18,4 +19,6 @@ public:
 private:
   std::atomic<T> value_{};
 };
+
+using Counter = CounterBase<std::uint64_t>;
 } // namespace promxx::metrics

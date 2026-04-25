@@ -11,6 +11,7 @@ add_executable(promxx_tests
     test_counter.cpp
     test_gauge.cpp
     test_histogram.cpp
+    test_registry.cpp
 )
 
 target_link_libraries(promxx_tests

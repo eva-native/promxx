@@ -9,12 +9,13 @@
 #include <stdexcept>
 #include <vector>
 
+#include "promxx/detail/noncopybale.h"
 #include "promxx/meta/concepts.h"
 
 namespace promxx::metrics {
 template <typename T = double>
   requires(MetricValue<T>)
-class Histogram {
+class Histogram : ::promxx::detail::Noncopybale {
 public:
   explicit Histogram(std::vector<double> bounds) : bounds_(std::move(bounds)) {
     if (bounds_.empty()) {

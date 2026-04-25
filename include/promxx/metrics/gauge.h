@@ -2,12 +2,13 @@
 
 #include <atomic>
 
+#include "promxx/detail/noncopybale.h"
 #include "promxx/meta/concepts.h"
 
 namespace promxx::metrics {
 template <typename T = double>
   requires(MetricValue<T>)
-class Gauge {
+class Gauge : ::promxx::detail::Noncopybale {
 public:
   void Inc() { Inc(T{1}); }
   void Inc(T v) { value_.fetch_add(v, std::memory_order_relaxed); }

@@ -36,14 +36,23 @@ add_library(promxx::promxx ALIAS promxx)
 target_sources(promxx
     PRIVATE
         src/promxx.cpp
+        src/metrics/family_base.cpp
     PUBLIC FILE_SET HEADERS
         BASE_DIRS include
         FILES
             include/promxx/promxx.h
+            include/promxx/registry.h
+
+            include/promxx/metrics/description.h
             include/promxx/metrics/gauge.h
             include/promxx/metrics/counter.h
             include/promxx/metrics/histogram.h
+            include/promxx/metrics/family.h
+            include/promxx/metrics/family_base.h
+
             include/promxx/meta/concepts.h
+
+            include/promxx/detail/noncopybale.h
 )
 
 if(${PROMXX_INSTALL})
