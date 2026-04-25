@@ -1,10 +1,9 @@
 # promxx
 
-A modern, header-only C++ library implementing the [Prometheus](https://prometheus.io/) / [OpenMetrics](https://openmetrics.io/) data model. promxx provides thread-safe metric primitives — Counter, Gauge, and Histogram — and is deliberately agnostic about exposition: it exposes raw metric state so you can serialize it to any format (Prometheus text, OpenMetrics, JSON, StatsD, etc.) through whatever transport you choose.
+A modern C++ library implementing the [Prometheus](https://prometheus.io/) / [OpenMetrics](https://openmetrics.io/) data model. promxx provides thread-safe metric primitives — Counter, Gauge, and Histogram — and is deliberately agnostic about exposition: it exposes raw metric state so you can serialize it to any format (Prometheus text, OpenMetrics, JSON, StatsD, etc.) through whatever transport you choose.
 
 ## Features
 
-- **Header-only** — drop `include/` into your project, no compiled dependency required
 - **Lock-free** — all state is backed by `std::atomic`; no mutexes, no contention
 - **Type-generic** — Counter and Gauge are templates over any arithmetic type
 - **OpenMetrics-aligned** — Histogram stores cumulative bucket counts and an `+Inf` bound, matching the wire format directly
@@ -16,10 +15,6 @@ A modern, header-only C++ library implementing the [Prometheus](https://promethe
 - CMake 3.23+ (for the CMake integration; not required if you copy headers directly)
 
 ## Installation
-
-### Copy headers
-
-Copy `include/promxx/` into your project and add it to your include path. No build step needed.
 
 ### CMake (FetchContent)
 

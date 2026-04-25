@@ -7,7 +7,7 @@ namespace promxx::metrics {
 template <typename M>
 class Family : public FamilyBase {
 public:
-  Family(Description desc) : FamilyBase(std::move(desc)) {}
+  explicit Family(Description desc) : FamilyBase(std::move(desc)) {}
 
   M &Add() {
 
