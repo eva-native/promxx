@@ -36,6 +36,7 @@ add_library(promxx::promxx ALIAS promxx)
 target_sources(promxx
     PRIVATE
         src/promxx.cpp
+        src/label.cpp
         src/metrics/family_base.cpp
     PUBLIC FILE_SET HEADERS
         BASE_DIRS include
