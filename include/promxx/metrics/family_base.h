@@ -7,7 +7,7 @@ namespace promxx::metrics {
 class FamilyBase : ::promxx::detail::Noncopybale {
 public:
   explicit FamilyBase(Description desc) noexcept;
-private:
+protected:
   Description desc_;
 };
 }

@@ -10,7 +10,6 @@ public:
   explicit Family(Description desc) : FamilyBase(std::move(desc)) {}
 
   M &Add() {
-
   }
 
 private:
