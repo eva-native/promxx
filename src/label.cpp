@@ -8,12 +8,19 @@
 
 namespace promxx {
 void Label::Validate() {
-  if (detail::IsValidLabelName(name_)) {
+  if (!detail::IsValidLabelName(name_)) {
     throw std::invalid_argument("invalid label name");
   }
 }
 
 bool Label::Empty() const noexcept { return value_.empty(); }
+
+LabelSet::LabelSet(std::initializer_list<Label> labels) {
+  labels_.reserve(labels.size());
+  for (auto &label : labels) {
+    InsertOrAssign(label);
+  }
+}
 
 void LabelSet::InsertOrAssign(Label label) {
   auto it = Find(label.Name());

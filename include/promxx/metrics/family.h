@@ -14,9 +14,11 @@ public:
   explicit Family(Description desc) : FamilyBase(std::move(desc)) {}
 
   M &Add(LabelSet labels) {
-    if (metrics_.contains(labels))
-      throw std::invalid_argument("duplicate metric labels");
-    metrics_[labels] = M{};
+    auto [it, ok] = metrics_.try_emplace(std::move(labels));
+    if (!ok) {
+      throw std::invalid_argument("duplicate metric labelset");
+    }
+    return it->second;
   }
 
 private:

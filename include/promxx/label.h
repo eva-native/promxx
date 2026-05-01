@@ -33,6 +33,7 @@ public:
   using ContainerType = std::vector<Label>;
 
   LabelSet() = default;
+  LabelSet(std::initializer_list<Label> label);
 
   void InsertOrAssign(Label label);
   bool Erase(std::string_view name);
